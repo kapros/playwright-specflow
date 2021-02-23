@@ -6,6 +6,10 @@ namespace Playwright.Extras
 {
     public static class Injectors
     {
+        public const string CardTitle = "todo1";
+        public const bool CardCompletedStatus = true;
+        public const bool CardEditingStatus = false;
+        public const int CardKey = 1;
         public static async Task InjectExisintgToDoCard(IPage page)
         {
             var key = "todos-mithril";
@@ -19,10 +23,5 @@ namespace Playwright.Extras
             await page.ReloadAsync();
             await page.ClickAsync("a[href*='completed']");
         }
-
-        public const string CardTitle = "todo1";
-        public const bool CardCompletedStatus = true;
-        public const bool CardEditingStatus = false;
-        public const int CardKey = 1;
     }
 }
