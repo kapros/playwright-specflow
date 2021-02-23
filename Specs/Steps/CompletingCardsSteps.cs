@@ -2,7 +2,6 @@ using NUnit.Framework;
 using Playwright.Extras;
 using Playwright.PageObjects;
 using PlaywrightSharp;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
@@ -13,6 +12,7 @@ namespace Playwright
     public class CompletingCardsSteps : StepsBase
     {
         public const string CARD_NAME_COMPLETE = "complete";
+
         public CompletingCardsSteps(IPage page, ToDoMvcPage todoPage) : base(page, todoPage)
         { }
 

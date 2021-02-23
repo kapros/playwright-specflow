@@ -1,7 +1,5 @@
 ﻿using Playwright.PageObjects;
 using PlaywrightSharp;
-using System.Threading.Tasks;
-using TechTalk.SpecFlow;
 
 namespace Playwright
 {

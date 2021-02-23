@@ -10,6 +10,7 @@ namespace Playwright.Extras
         public const bool CardCompletedStatus = true;
         public const bool CardEditingStatus = false;
         public const int CardKey = 1;
+
         public static async Task InjectExisintgToDoCard(IPage page)
         {
             var key = "todos-mithril";
