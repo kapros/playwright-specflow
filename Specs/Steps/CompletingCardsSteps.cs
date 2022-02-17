@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Playwright.Extras;
 using Playwright.PageObjects;
-using PlaywrightSharp;
+using Microsoft.Playwright;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;

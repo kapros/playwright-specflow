@@ -1,7 +1,7 @@
 ﻿using AventStack.ExtentReports;
 using AventStack.ExtentReports.Reporter;
 using BoDi;
-using PlaywrightSharp;
+using Microsoft.Playwright;
 using System;
 using System.IO;
 using System.Text;
@@ -43,11 +43,11 @@ namespace Playwright.Specs.Steps
         [BeforeScenario]
         public async Task NavigateTo()
         {
-            var pwright = await global::PlaywrightSharp.Playwright.CreateAsync();
-            var browser = await pwright.Chromium.LaunchAsync(new LaunchOptions { Headless = false });
-            var browserContext = await browser.NewContextAsync(new BrowserContextOptions { BypassCSP = true });
+            var pwright = await global::Microsoft.Playwright.Playwright.CreateAsync();
+            var browser = await pwright.Chromium.LaunchAsync(new global::Microsoft.Playwright.BrowserTypeLaunchOptions { Headless = false, SlowMo = 2000 });
+            var browserContext = await browser.NewContextAsync(new BrowserNewContextOptions { BypassCSP = true });
             var page = await browserContext.NewPageAsync();
-            await page.GoToAsync("http://todomvc.com/examples/mithril/#/");
+            await page.GotoAsync("http://todomvc.com/examples/mithril/#/");
             _objectContainer.RegisterInstanceAs(browser);
             _objectContainer.RegisterInstanceAs(page);
             var currentTest = _scenarioContext.ScenarioInfo.Title;
@@ -61,7 +61,7 @@ namespace Playwright.Specs.Steps
             if (_scenarioContext.TestError == null)
                 return;
             var dir = _resultsRoot.CreateSubdirectory("Screenshots");
-            var screenshot = await _objectContainer.Resolve<IPage>().ScreenshotAsync(System.IO.Path.Join(dir.FullName, $"{_scenarioContext.ScenarioInfo.Title}.jpg"));
+            var screenshot = await _objectContainer.Resolve<IPage>().ScreenshotAsync(new PageScreenshotOptions { Path = System.IO.Path.Join(dir.FullName, $"{_scenarioContext.ScenarioInfo.Title}.jpg") });
             ReportTest(Convert.ToBase64String(screenshot));
         }
 

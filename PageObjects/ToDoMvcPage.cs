@@ -1,4 +1,4 @@
-﻿using PlaywrightSharp;
+﻿using Microsoft.Playwright;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +16,12 @@ namespace Playwright.PageObjects
             _page = page;
         }
 
-        public Task<IEnumerable<IElementHandle>> AllToDos => _page.QuerySelectorAllAsync(".todo-list .view");
+        public Task<IReadOnlyList<IElementHandle>> AllToDos => _page.QuerySelectorAllAsync(".todo-list .view");
 
         public async Task MarkToDoAsDone(string todo)
         {
             var allCheckBoxes = await AllToDos;
-            var todoCard = allCheckBoxes.FirstOrDefault(x => x.GetTextContentAsync().Result == todo);
+            var todoCard = allCheckBoxes.FirstOrDefault(x => x.TextContentAsync().Result == todo);
             var checkbox = await todoCard.QuerySelectorAsync("input[type='checkbox']");
             await checkbox.CheckAsync();
         }
