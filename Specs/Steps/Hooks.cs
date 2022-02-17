@@ -19,6 +19,7 @@ namespace Playwright.Specs.Steps
         private static ExtentTest _test;
         private ExtentTest _currentTest;
         private static DirectoryInfo _resultsRoot;
+        private static IPlaywright _pw;
 
         public Hooks(IObjectContainer objectContainer, ScenarioContext scenarioContext)
         {
@@ -32,6 +33,7 @@ namespace Playwright.Specs.Steps
             _resultsRoot = Directory.CreateDirectory("Results");
             _report.AttachReporter(new ExtentHtmlReporter(_resultsRoot.FullName,
         AventStack.ExtentReports.Reporter.Configuration.ViewStyle.SPA));
+            _pw =  global::Microsoft.Playwright.Playwright.CreateAsync().Result;
         }
 
         [AfterTestRun]
@@ -43,8 +45,7 @@ namespace Playwright.Specs.Steps
         [BeforeScenario]
         public async Task NavigateTo()
         {
-            var pwright = await global::Microsoft.Playwright.Playwright.CreateAsync();
-            var browser = await pwright.Chromium.LaunchAsync(new global::Microsoft.Playwright.BrowserTypeLaunchOptions { Headless = false, SlowMo = 2000 });
+            var browser = await _pw.Chromium.LaunchAsync(new global::Microsoft.Playwright.BrowserTypeLaunchOptions { Headless = false, SlowMo = 2000 });
             var browserContext = await browser.NewContextAsync(new BrowserNewContextOptions { BypassCSP = true });
             var page = await browserContext.NewPageAsync();
             await page.GotoAsync("http://todomvc.com/examples/mithril/#/");
@@ -58,11 +59,13 @@ namespace Playwright.Specs.Steps
         [AfterScenario]
         public async Task SaveScreenshot()
         {
-            if (_scenarioContext.TestError == null)
-                return;
-            var dir = _resultsRoot.CreateSubdirectory("Screenshots");
-            var screenshot = await _objectContainer.Resolve<IPage>().ScreenshotAsync(new PageScreenshotOptions { Path = System.IO.Path.Join(dir.FullName, $"{_scenarioContext.ScenarioInfo.Title}.jpg") });
-            ReportTest(Convert.ToBase64String(screenshot));
+            if (_scenarioContext.TestError != null)
+            {
+                var dir = _resultsRoot.CreateSubdirectory("Screenshots");
+                var screenshot = await _objectContainer.Resolve<IPage>().ScreenshotAsync(new PageScreenshotOptions { Path = System.IO.Path.Join(dir.FullName, $"{_scenarioContext.ScenarioInfo.Title}.jpg") });
+                ReportTest(Convert.ToBase64String(screenshot));
+            }
+            await _objectContainer.Resolve<IBrowser>().CloseAsync();
         }
 
         private void ReportTest(string screenshot)
